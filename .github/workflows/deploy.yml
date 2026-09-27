@@ -25,4 +25,5 @@ jobs:
         run: aws --endpoint-url http://localhost:4566 s3 cp index.html s3://portofolio-ku/
 
       - name: 3. Reset Cache CloudFront (Invalidation)
+        continue-on-error: true
         run: aws --endpoint-url http://localhost:4566 cloudfront create-invalidation --distribution-id E678JXJJO4EGRM --paths "/*"
