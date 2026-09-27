@@ -1,0 +1,28 @@
+name: Deploy Portfolio ke Floci
+
+# Kapan robot ini berjalan? (Setiap ada push ke branch main)
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    # Menugaskan robot lokal yang baru saja kamu jalankan
+    runs-on: self-hosted
+
+    # Konfigurasi Kunci AWS Palsu (Untuk Floci)
+    env:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+
+    steps:
+      - name: 1. Ambil kode HTML terbaru dari GitHub
+        uses: actions/checkout@v4
+
+      - name: 2. Upload file ke S3 Bucket (Output Terraform)
+        run: aws --endpoint-url http://localhost:4566 s3 cp index.html s3://portofolio-ku/
+
+      - name: 3. Reset Cache CloudFront (Invalidation)
+        run: aws --endpoint-url http://localhost:4566 cloudfront create-invalidation --distribution-id E678JXJJO4EGRM --paths "/*"
